@@ -110,7 +110,7 @@ class ManagerTest {
     }
 
     @Test
-    void shouldRemoveByNullId() {
+    void shouldRemoveByNotExistElement() {
 
         repository.save(first);
         repository.save(second);
