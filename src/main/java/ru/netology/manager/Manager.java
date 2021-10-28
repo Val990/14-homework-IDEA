@@ -25,17 +25,17 @@ public class Manager {
     }
 
 
-    public void add(TicketInfo item) {
-        repository.save(item);
+    public void add(TicketInfo ticket) {
+        repository.save(ticket);
     }
 
     public TicketInfo[] searchBy(String from, String to) {
         TicketInfo[] result = new TicketInfo[0];
-        for (TicketInfo item : repository.findAll()) {
-            if (item.getFrom().equalsIgnoreCase(from) && item.getTo().equalsIgnoreCase(to)) {
+        for (TicketInfo ticket : repository.findAll()) {
+            if (ticket.getFrom().equalsIgnoreCase(from) && ticket.getTo().equalsIgnoreCase(to)) {
                 TicketInfo[] tmp = new TicketInfo[result.length + 1];
                 System.arraycopy(result, 0, tmp, 0, result.length);
-                tmp[tmp.length - 1] = item;
+                tmp[tmp.length - 1] = ticket;
                 result = tmp;
             }
         }
