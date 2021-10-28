@@ -12,7 +12,7 @@ public class TicketInfo implements Comparable<TicketInfo> {
         this.ticketPrice = ticketPrice;
         this.from = from;
         this.to = to;
-        this.flightTimeHours = this.flightTimeHours;
+        this.flightTimeHours = flightTimeHours;
     }
 
     public TicketInfo() {
