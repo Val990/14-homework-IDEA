@@ -4,6 +4,7 @@ import ru.netology.domain.TicketInfo;
 import ru.netology.repository.Repository;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class Manager {
 
@@ -29,7 +30,7 @@ public class Manager {
         repository.save(ticket);
     }
 
-    public TicketInfo[] searchBy(String from, String to) {
+    public TicketInfo[] searchBy(String from, String to, Comparator<TicketInfo> comparator) {
         TicketInfo[] result = new TicketInfo[0];
         for (TicketInfo ticket : repository.findAll()) {
             if (ticket.getFrom().equalsIgnoreCase(from) && ticket.getTo().equalsIgnoreCase(to)) {
@@ -39,7 +40,7 @@ public class Manager {
                 result = tmp;
             }
         }
-        Arrays.sort(result);
+        Arrays.sort(result, comparator);
         return result;
     }
 }
