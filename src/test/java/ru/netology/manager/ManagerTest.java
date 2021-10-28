@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.domain.NegativeIdException;
 import ru.netology.domain.NotFoundException;
+import ru.netology.domain.TicketByTimeAscComparator;
 import ru.netology.domain.TicketInfo;
 import ru.netology.repository.Repository;
 
@@ -15,9 +16,10 @@ class ManagerTest {
 
     Repository repository = new Repository();
     Manager manager = new Manager(repository);
+    TicketByTimeAscComparator comparator = new TicketByTimeAscComparator();
 
-    private TicketInfo first = new TicketInfo(1, 2_000, "SVO", "LED", 2);
-    private TicketInfo second = new TicketInfo(2, 4_000, "LED", "CEK", 3);
+    private TicketInfo first = new TicketInfo(1, 2_000, "SVO", "LED", 3);
+    private TicketInfo second = new TicketInfo(2, 4_000, "LED", "CEK", 4);
     private TicketInfo third = new TicketInfo(3, 3_000, "SVO", "LED", 2);
     private TicketInfo forth = new TicketInfo(4, 30_000, "DME", "JFK", 10);
     private TicketInfo fifth = new TicketInfo(5, 20_000, "LED", "CDG", 5);
@@ -33,56 +35,42 @@ class ManagerTest {
     }
 
     @Test
-    void shouldFindAll() {
+    public void shouldSortByFlightTime() {
 
-        TicketInfo[] expected = new TicketInfo[]{first, second, third, forth, fifth};
-        TicketInfo[] actual = repository.findAll();
-
-        assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    void shouldSearchOneFlight() {
-
-        TicketInfo[] expected = new TicketInfo[]{forth};
-        TicketInfo[] actual = manager.searchBy("DME", "JFK");
-
-        assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    void shouldSearchTwoSameFlight() {
-
-        TicketInfo[] expected = new TicketInfo[]{first, third};
-        TicketInfo[] actual = manager.searchBy("SVO", "LED");
-
-        assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    void shouldSearchByNotExistFlight() {
-
-        TicketInfo[] expected = new TicketInfo[]{};
-        TicketInfo[] actual = manager.searchBy("SHJ", "SHJ");
-
-        assertArrayEquals(expected, actual);
-
-    }
-
-    @Test
-    public void shouldSortByPrice() {
-
-        TicketInfo[] expected = new TicketInfo[]{first, third, second, fifth, forth};
+        TicketInfo[] expected = new TicketInfo[]{third, first, second, fifth, forth};
         TicketInfo[] actual = new TicketInfo[]{first, second, third, forth, fifth};
 
-        Arrays.sort(actual);
+        Arrays.sort(actual, comparator);
 
         assertArrayEquals(actual, expected);
     }
 
+    @Test
+    void shouldSortOneTicketByFlightTime() {
+
+        TicketInfo[] expected = new TicketInfo[]{fifth};
+        TicketInfo[] actual = manager.searchBy("LED", "CDG", comparator);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    void shouldSortTwoTicketByFlightTime() {
+
+        TicketInfo[] expected = new TicketInfo[]{third, first};
+        TicketInfo[] actual = manager.searchBy("SVO", "LED", comparator);
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    void shouldSortFlightNotExist() {
+
+        TicketInfo[] expected = new TicketInfo[]{};
+        TicketInfo[] actual = manager.searchBy("SHJ", "LED", comparator);
+
+        assertArrayEquals(expected, actual);
+    }
 
     @Test
     void shouldRemoveById() {
@@ -121,38 +109,5 @@ class ManagerTest {
         assertThrows(NotFoundException.class, () -> {
             repository.removeById(70);
         });
-    }
-
-    @Test
-    void shouldFindRepo() {
-
-        Manager manager = new Manager();
-
-        manager.setRepository(repository);
-
-        assertEquals(repository, manager.getRepository());
-
-    }
-
-    @Test
-    public void shouldUseNoArgsConstructor() {
-    }
-
-    @Test
-    public void shouldUseAllArgsConstructor() {
-
-        TicketInfo ticketInfo = new TicketInfo();
-
-        ticketInfo.setTicketId(3);
-        ticketInfo.setTicketPrice(3_000);
-        ticketInfo.setFrom("SVO");
-        ticketInfo.setTo("LED");
-        ticketInfo.setFlightTimeHours(2);
-
-        assertEquals(3, ticketInfo.getTicketId());
-        assertEquals(3_000, ticketInfo.getTicketPrice());
-        assertEquals("SVO", ticketInfo.getFrom());
-        assertEquals("LED", ticketInfo.getTo());
-        assertEquals(2, ticketInfo.getFlightTimeHours());
     }
 }
